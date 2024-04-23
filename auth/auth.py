@@ -1,23 +1,38 @@
 from datetime import datetime, timedelta
 
-import bcrypt
 import jwt
+import psycopg2
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-
-test_map = {}
-USER_ID = 0
+# AUTH DB CREDENTIALS
+DB_NAME = "authorization_db"
+DB_USER = "postgres"
+DB_PASSWORD = "root"
+DB_HOST = "localhost"
+DB_PORT = "5432"
 
 # JWT secret key
 JWT_SECRET_KEY = 'EXTREMELY_SECRET_KEY'
 
 
+def get_connect_to_db():
+    return psycopg2.connect(
+        dbname=DB_NAME,
+        user=DB_USER,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT
+    )
+
+
+def get_cursor():
+    return get_connect_to_db().cursor()
+
+
 @app.route("/register", methods=["POST"])
 def register():
-    global USER_ID
-
     data = request.get_json()
 
     try:
@@ -30,18 +45,24 @@ def register():
             }
         ), 400
 
-    if username in test_map:
+    db_cursor = get_cursor()
+
+    # check unique username
+    db_cursor.execute("SELECT * FROM users WHERE username=%s", (username,))
+    if db_cursor.fetchone():
         return jsonify(
             {
                 "message": "User already exists"
             }
         ), 400
 
-    test_map[username] = {
-        "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()),
-        "user_id": USER_ID
-    }
-    USER_ID += 1
+    # add user into db
+    db_cursor.execute(
+        "INSERT INTO users (username, password) VALUES (%s, %s)",
+        (username, password)
+    )
+    db_cursor.connection.commit()
+    db_cursor.connection.close()
 
     return jsonify(
         {
@@ -64,14 +85,30 @@ def login():
             }
         ), 400
 
-    if username not in test_map:
-        return jsonify({'message': 'Username not registered'}), 401
+    db_cursor = get_cursor()
 
-    if bcrypt.checkpw(password.encode("utf-8"), test_map[username]["password"]):
+    # get user credentials
+    db_cursor.execute(
+        "SELECT * FROM users WHERE username=%s",
+        (username,)
+    )
+    query_result = db_cursor.fetchone()
+    db_cursor.connection.close()
+
+    # check user
+    if not query_result:
+        return jsonify(
+            {
+                "message": "Username not registered"
+            }
+        ), 401
+
+    # check password
+    if password == query_result[2]:
         token = jwt.encode(
             {
                 "username": username,
-                "user_id": test_map[username]["user_id"],
+                "user_id": query_result[0],
                 "exp": datetime.utcnow() + timedelta(minutes=2)
             },
             JWT_SECRET_KEY
@@ -79,8 +116,7 @@ def login():
 
         return jsonify(
             {
-                "token": token,
-                "user_id": test_map[username]["user_id"]
+                "token": token
             }
         ), 200
     else:
@@ -109,7 +145,7 @@ def authorize():
 
         return jsonify(
             {
-                "message": f"Authorized user: {username}",
+                "message": f"Authorized user: {username}, user_id: {user_id}",
                 "isAuthorized": True
             }
         ), 200
