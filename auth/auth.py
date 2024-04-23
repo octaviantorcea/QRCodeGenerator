@@ -145,7 +145,8 @@ def authorize():
 
         return jsonify(
             {
-                "message": f"Authorized user: {username}, user_id: {user_id}",
+                "message": f"Authorized user: {username}",
+                "user_id": user_id,
                 "isAuthorized": True
             }
         ), 200
