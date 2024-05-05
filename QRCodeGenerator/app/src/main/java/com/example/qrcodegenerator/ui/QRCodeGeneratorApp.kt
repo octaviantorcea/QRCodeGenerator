@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.ui.screens.HomeScreen
 
@@ -48,9 +50,16 @@ fun QRCodeGeneratorTopAppBar(
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
-                style = MaterialTheme.typography.headlineLarge
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold
             )
         },
         modifier = modifier
     )
+}
+
+@Preview
+@Composable
+fun AppPreview() {
+    QRCodeGeneratorApp()
 }

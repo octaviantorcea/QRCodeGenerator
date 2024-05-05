@@ -32,10 +32,13 @@ fun HomeScreen(
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
+            .padding(
+                top = contentPadding.calculateTopPadding().plus(16.dp),
+                bottom = contentPadding.calculateBottomPadding().plus(40.dp)
+            )
             .fillMaxSize()
-            .padding(top = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HomeScreenButton(
             buttonText = stringResource(id = R.string.generate_qr_code),
