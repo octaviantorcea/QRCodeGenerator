@@ -6,4 +6,15 @@
     <string name="register">Register</string>
     <string name="logout">Logout</string>
     <string name="back_arrow">Back arrow</string>
+    <string name="empty_user_or_password_title">Empty username or password</string>
+    <string name="empty_user_or_password_text">Please insert full credentials to complete the registration process.</string>
+    <string name="ok">OK</string>
+    <string name="registration_complete_text">Registration complete! Now you can login.</string>
+    <string name="registration_complete_title">Registration complete</string>
+    <string name="duplicate_username_title">Duplicate username</string>
+    <string name="duplicate_username_text">Username is already in use by another user. Please choose another one.</string>
+    <string name="in_progress_title">Please wait</string>
+    <string name="in_progress_text">Registration request has been sent. Please wait…</string>
+    <string name="unknown_error_title">Error</string>
+    <string name="unknown_error_text">An unexpected error has occurred. Please try again later.</string>
 </resources>

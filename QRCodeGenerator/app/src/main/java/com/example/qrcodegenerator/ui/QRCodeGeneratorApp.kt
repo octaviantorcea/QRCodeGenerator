@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.model.QRCodeScreen
 import com.example.qrcodegenerator.ui.screens.HomeScreen
+import com.example.qrcodegenerator.ui.screens.RegistrationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,20 +54,37 @@ fun QRCodeGeneratorApp(
                 navigateUp = { navController.navigateUp() }
             )
         }
-    ) {
+    ) { paddingValues ->
         val uiState by viewModel.uiState.collectAsState()
 
         NavHost(
             navController = navController,
             startDestination = QRCodeScreen.HomeScreen.name,
-            modifier = Modifier.padding(it)
+            modifier = Modifier.padding(paddingValues)
         ) {
             composable(route = QRCodeScreen.HomeScreen.name) {
                 HomeScreen(
                     isLogged = uiState.isLogged,
-                    onClickRegister = { viewModel.register("user1", "pass1") },
+                    onClickRegister = { navController.navigate(QRCodeScreen.RegistrationScreen.name) },
                     onClickLogin = { viewModel.login() },
                     onClickLogout = { viewModel.logout() }
+                )
+            }
+
+            composable(route = QRCodeScreen.RegistrationScreen.name) {
+                RegistrationScreen(
+                    inputUsername = viewModel.username,
+                    inputPassword = viewModel.password,
+                    onUsernameChange = { viewModel.updateUsername(it) },
+                    onPasswordChange = { viewModel.updatePassword(it) },
+                    onClickRegister = { viewModel.register() },
+                    registrationStatus = uiState.registrationStatus,
+                    onWrongRegistration = { viewModel.resetRegistrationStatus() },
+                    onCompleteRegistration = {
+                        viewModel.resetUsernameAndPassword()
+                        viewModel.resetRegistrationStatus()
+                        navController.navigateUp()
+                    }
                 )
             }
         }
