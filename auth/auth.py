@@ -109,7 +109,7 @@ def login():
             {
                 "username": username,
                 "user_id": query_result[0],
-                "exp": datetime.utcnow() + timedelta(minutes=2)
+                "exp": datetime.utcnow() + timedelta(hours=2)
             },
             JWT_SECRET_KEY
         )
