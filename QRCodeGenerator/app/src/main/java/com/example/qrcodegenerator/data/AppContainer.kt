@@ -11,7 +11,7 @@ interface AppContainer {
 }
 
 class DefaultAppContainer: AppContainer {
-    private val authUrl = "http://127.0.0.1"
+    private val authUrl = "http://10.0.2.2:8089"
 
     private val authRetrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))

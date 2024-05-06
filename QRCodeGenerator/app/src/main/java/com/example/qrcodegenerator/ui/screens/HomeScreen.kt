@@ -27,28 +27,35 @@ import com.example.qrcodegenerator.R
 
 @Composable
 fun HomeScreen(
-    qrCodeGeneratorUiState: () -> Unit, // TODO
+    isLogged: Boolean,
     modifier: Modifier = Modifier,
+    onClickRegister: () -> Unit,
+    onClickLogin: () -> Unit,
+    onClickLogout: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .padding(
-                top = contentPadding.calculateTopPadding().plus(16.dp),
-                bottom = contentPadding.calculateBottomPadding().plus(40.dp)
+                top = contentPadding
+                    .calculateTopPadding()
+                    .plus(16.dp),
+                bottom = contentPadding
+                    .calculateBottomPadding()
+                    .plus(40.dp)
             )
             .fillMaxSize()
     ) {
         HomeScreenButton(
             buttonText = stringResource(id = R.string.generate_qr_code),
             iconPainterResource = painterResource(id = R.drawable.qr_code),
-            onClick = {},
+            onClick = { },
             modifier = modifier
                 .height(70.dp)
         )
 
-        if (false) {
+        if (isLogged) {
             HomeScreenButton(
                 buttonText = "View Saved Codes",
                 iconPainterResource = painterResource(id = R.drawable.save),
@@ -64,10 +71,10 @@ fun HomeScreen(
                 .weight(1f)
         )
         LoginButtons(
-            uiState = { /*TODO*/ },
-            onClickLogin = { /*TODO*/ },
-            onClickRegister = { /*TODO*/ },
-            onClickLogout = { /*TODO*/ }
+            isLogged = isLogged,
+            onClickLogin = onClickLogin,
+            onClickRegister = onClickRegister,
+            onClickLogout = onClickLogout
         )
     }
 }
@@ -100,7 +107,7 @@ fun HomeScreenButton(
 
 @Composable
 fun LoginButtons(
-    uiState: () -> Unit, // TODO
+    isLogged: Boolean,
     onClickLogin: () -> Unit,
     onClickRegister: () -> Unit,
     onClickLogout: () -> Unit,
@@ -110,11 +117,11 @@ fun LoginButtons(
         modifier = modifier
             .padding(start = 12.dp, end = 12.dp)
     ) {
-        if (true) {
+        if (!isLogged) {
            HomeScreenButton(
                buttonText = stringResource(id = R.string.login),
                iconPainterResource = painterResource(id = R.drawable.login_7),
-               onClick = { onClickLogin },
+               onClick = onClickLogin,
                modifier = Modifier.width(180.dp)
            )
             Spacer(modifier = Modifier
@@ -122,14 +129,14 @@ fun LoginButtons(
             HomeScreenButton(
                 buttonText = stringResource(id = R.string.register),
                 iconPainterResource = painterResource(id = R.drawable.new_registration_icon),
-                onClick = { onClickRegister },
+                onClick = onClickRegister,
                 modifier = Modifier.width(180.dp)
             )
         } else {
             HomeScreenButton(
                 buttonText = stringResource(id = R.string.logout),
                 iconPainterResource = painterResource(id = R.drawable.logout),
-                onClick = { onClickLogout },
+                onClick = onClickLogout,
                 modifier = Modifier.width(180.dp)
             )
         }
@@ -140,6 +147,9 @@ fun LoginButtons(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
-        qrCodeGeneratorUiState = {}
+        isLogged = false,
+        onClickRegister = {},
+        onClickLogin = {},
+        onClickLogout = {}
     )
 }
