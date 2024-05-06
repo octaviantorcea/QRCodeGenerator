@@ -100,7 +100,9 @@ class QRCodeGeneratorViewModel(
     fun logout() {
         _uiState.update {
             it.copy(
-                isLogged = false
+                isLogged = false,
+                loginStatus = LoginStatus.NOT_STARTED,
+                token = ""
             )
         }
     }
