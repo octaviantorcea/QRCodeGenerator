@@ -1,7 +1,8 @@
 package com.example.qrcodegenerator.data
 
 import com.example.qrcodegenerator.model.AuthServiceBasicResponse
-import com.example.qrcodegenerator.model.NewUser
+import com.example.qrcodegenerator.model.LoginResponse
+import com.example.qrcodegenerator.model.UserCredentials
 import com.example.qrcodegenerator.network.AuthApiService
 import retrofit2.Response
 
@@ -10,6 +11,11 @@ interface AuthRepository {
         username: String,
         password: String
     ): Response<AuthServiceBasicResponse>
+
+    suspend fun login(
+        username: String,
+        password: String
+    ): Response<LoginResponse>
 }
 
 class NetworkAuthRepository(
@@ -18,5 +24,10 @@ class NetworkAuthRepository(
     override suspend fun register(
         username: String,
         password: String
-    ) : Response<AuthServiceBasicResponse> = authApiService.register(NewUser(username, password))
+    ) : Response<AuthServiceBasicResponse> = authApiService.register(UserCredentials(username, password))
+
+    override suspend fun login(
+        username: String,
+        password: String
+    ): Response<LoginResponse> = authApiService.login(UserCredentials(username, password))
 }

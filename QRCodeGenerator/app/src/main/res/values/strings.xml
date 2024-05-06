@@ -19,4 +19,14 @@
     <string name="unknown_error_text">An unexpected error has occurred. Please try again later.</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="empty_user_or_password_text_login">Please insert full credentials to complete the login process.</string>
+    <string name="login_complete_title">Login complete!</string>
+    <string name="login_complete_text">Login complete. Now you can save and see older QR codes.</string>
+    <string name="in_progress_text_login">Login request has been sent. Please wait…</string>
+    <string name="wrong_user_title">Unknown user</string>
+    <string name="wrong_user_text">User you submitted is not registered. Please check for any typos,
+        or, alternatively, you can create an account with this username by pressing the Register
+        button.</string>
+    <string name="wrong_password_title">Wrong password</string>
+    <string name="wrong_password_text">Wrong password. Please check for typos and try again.</string>
 </resources>

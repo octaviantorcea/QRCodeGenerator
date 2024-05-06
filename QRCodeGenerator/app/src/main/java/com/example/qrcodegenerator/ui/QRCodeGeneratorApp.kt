@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.model.QRCodeScreen
 import com.example.qrcodegenerator.ui.screens.HomeScreen
+import com.example.qrcodegenerator.ui.screens.LoginScreen
 import com.example.qrcodegenerator.ui.screens.RegistrationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,8 +66,16 @@ fun QRCodeGeneratorApp(
             composable(route = QRCodeScreen.HomeScreen.name) {
                 HomeScreen(
                     isLogged = uiState.isLogged,
-                    onClickRegister = { navController.navigate(QRCodeScreen.RegistrationScreen.name) },
-                    onClickLogin = { viewModel.login() },
+                    onClickRegister = {
+                        viewModel.resetRegistrationStatus()
+                        viewModel.resetUsernameAndPassword()
+                        navController.navigate(QRCodeScreen.RegistrationScreen.name)
+                    },
+                    onClickLogin = {
+                        viewModel.resetRegistrationStatus()
+                        viewModel.resetUsernameAndPassword()
+                        navController.navigate(QRCodeScreen.LoginScreen.name)
+                    },
                     onClickLogout = { viewModel.logout() }
                 )
             }
@@ -83,6 +92,23 @@ fun QRCodeGeneratorApp(
                     onCompleteRegistration = {
                         viewModel.resetUsernameAndPassword()
                         viewModel.resetRegistrationStatus()
+                        navController.navigateUp()
+                    }
+                )
+            }
+
+            composable(route = QRCodeScreen.LoginScreen.name) {
+                LoginScreen(
+                    inputUsername = viewModel.username,
+                    inputPassword = viewModel.password,
+                    onUsernameChange = { viewModel.updateUsername(it) },
+                    onPasswordChange = { viewModel.updatePassword(it) },
+                    onClickLogin = { viewModel.login() },
+                    loginStatus = uiState.loginStatus,
+                    onWrongLogin = { viewModel.resetLoginStatus() },
+                    onCompleteLogin = {
+                        viewModel.resetUsernameAndPassword()
+                        viewModel.resetLoginStatus()
                         navController.navigateUp()
                     }
                 )

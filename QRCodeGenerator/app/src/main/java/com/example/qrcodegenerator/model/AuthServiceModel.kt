@@ -8,7 +8,12 @@ data class AuthServiceBasicResponse(
 )
 
 @Serializable
-data class NewUser(
+data class UserCredentials(
     val username: String,
     val password: String
+)
+
+@Serializable
+data class LoginResponse(
+    val token: String
 )
