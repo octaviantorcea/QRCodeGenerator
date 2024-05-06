@@ -17,4 +17,6 @@
     <string name="in_progress_text">Registration request has been sent. Please wait…</string>
     <string name="unknown_error_title">Error</string>
     <string name="unknown_error_text">An unexpected error has occurred. Please try again later.</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
 </resources>
