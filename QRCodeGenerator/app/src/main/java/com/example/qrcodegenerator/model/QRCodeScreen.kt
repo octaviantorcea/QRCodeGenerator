@@ -6,5 +6,6 @@ import com.example.qrcodegenerator.R
 enum class QRCodeScreen(@StringRes val title: Int) {
     HomeScreen(title = R.string.app_name),
     RegistrationScreen(title = R.string.register),
-    LoginScreen(title = R.string.login)
+    LoginScreen(title = R.string.login),
+    QRCodeParamsScreen(title = R.string.qr_code_params_screen_title)
 }

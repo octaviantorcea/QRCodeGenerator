@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -37,12 +38,64 @@ class QRCodeGeneratorViewModel(
     var password by mutableStateOf("")
         private set
 
+    var encodedData by mutableStateOf("")
+        private set
+
+    var codeRed by mutableStateOf("0")
+        private set
+
+    var codeGreen by mutableStateOf("0")
+        private set
+
+    var codeBlue by mutableStateOf("0")
+        private set
+
     fun updateUsername(updatedUsername: String) {
         username = updatedUsername
     }
 
     fun updatePassword(updatedPassword: String) {
         password = updatedPassword
+    }
+
+    fun updateEncodedData(updatedEncodedData: String) {
+        encodedData = updatedEncodedData
+    }
+
+    fun updateRed(updatedRed: String) {
+        codeRed = updatedRed
+    }
+
+    fun updateGreen(updatedGreen: String) {
+        codeGreen = updatedGreen
+    }
+
+    fun updateBlue(updatedBlue: String) {
+        codeBlue = updatedBlue
+    }
+
+    private fun validateStringIntForColor(stringInt: String): Int {
+        var result: Int
+
+        try {
+            result = stringInt.toInt()
+
+            if (result > 255 || result < 0) {
+                throw Exception()
+            }
+        } catch (e: Exception) {
+            result = 0
+        }
+
+        return result
+    }
+
+    fun getQRCodeColor(): Color {
+        return Color(
+            validateStringIntForColor(codeRed),
+            validateStringIntForColor(codeGreen),
+            validateStringIntForColor(codeBlue),
+        )
     }
 
     @OptIn(ExperimentalSerializationApi::class)

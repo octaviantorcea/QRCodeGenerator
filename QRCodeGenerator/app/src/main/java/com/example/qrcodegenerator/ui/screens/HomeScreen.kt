@@ -25,6 +25,7 @@ fun HomeScreen(
     onClickRegister: () -> Unit,
     onClickLogin: () -> Unit,
     onClickLogout: () -> Unit,
+    onClickGenerate: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
@@ -43,7 +44,7 @@ fun HomeScreen(
         CustomIconButton(
             buttonText = stringResource(id = R.string.generate_qr_code),
             iconPainterResource = painterResource(id = R.drawable.qr_code),
-            onClick = { },
+            onClick = onClickGenerate,
             modifier = modifier
                 .height(70.dp)
         )
@@ -117,6 +118,7 @@ fun HomeScreenPreview() {
         isLogged = false,
         onClickRegister = {},
         onClickLogin = {},
-        onClickLogout = {}
+        onClickLogout = {},
+        onClickGenerate = {}
     )
 }

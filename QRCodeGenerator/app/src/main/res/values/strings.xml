@@ -29,4 +29,11 @@
         button.</string>
     <string name="wrong_password_title">Wrong password</string>
     <string name="wrong_password_text">Wrong password. Please check for typos and try again.</string>
+    <string name="qr_code_params_screen_title">QR Code Parameters</string>
+    <string name="data">Data</string>
+    <string name="drop_down_arrow">Drop down arrow</string>
+    <string name="additional_options">Additional options:</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="blue">Blue</string>
 </resources>

@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,6 +29,7 @@ import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.model.QRCodeScreen
 import com.example.qrcodegenerator.ui.screens.HomeScreen
 import com.example.qrcodegenerator.ui.screens.LoginScreen
+import com.example.qrcodegenerator.ui.screens.QRCodeParamsScreen
 import com.example.qrcodegenerator.ui.screens.RegistrationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,7 +76,8 @@ fun QRCodeGeneratorApp(
                         viewModel.resetUsernameAndPassword()
                         navController.navigate(QRCodeScreen.LoginScreen.name)
                     },
-                    onClickLogout = { viewModel.logout() }
+                    onClickLogout = { viewModel.logout() },
+                    onClickGenerate = { navController.navigate(QRCodeScreen.QRCodeParamsScreen.name) }
                 )
             }
 
@@ -113,6 +114,20 @@ fun QRCodeGeneratorApp(
                     }
                 )
             }
+
+            composable(route = QRCodeScreen.QRCodeParamsScreen.name) {
+                QRCodeParamsScreen(
+                    encodedData = viewModel.encodedData,
+                    onUpdateEncodedData = { viewModel.updateEncodedData(it) },
+                    codeRed = viewModel.codeRed,
+                    codeGreen = viewModel.codeGreen,
+                    codeBlue = viewModel.codeBlue,
+                    onUpdateRed = { viewModel.updateRed(it) },
+                    onUpdateGreen = { viewModel.updateGreen(it) },
+                    onUpdateBlue = { viewModel.updateBlue(it) },
+                    textColor = viewModel.getQRCodeColor()
+                )
+            }
         }
     }
 }
@@ -147,10 +162,4 @@ fun QRCodeGeneratorTopAppBar(
         },
         modifier = modifier
     )
-}
-
-@Preview
-@Composable
-fun AppPreview() {
-    QRCodeGeneratorApp()
 }
