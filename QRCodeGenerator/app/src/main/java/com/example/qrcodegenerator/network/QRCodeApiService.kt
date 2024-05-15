@@ -8,6 +8,7 @@ import retrofit2.http.Query
 interface QRCodeApiService {
     @GET("create-qr-code")
     suspend fun getQRCode(
-        @Query("data") encodedData: String
+        @Query("data") encodedData: String,
+        @Query("color") qrColor: String
     ): Response<ResponseBody>
 }

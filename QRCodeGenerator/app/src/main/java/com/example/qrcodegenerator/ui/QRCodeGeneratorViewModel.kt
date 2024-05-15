@@ -2,6 +2,7 @@ package com.example.qrcodegenerator.ui
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Base64
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -94,6 +95,10 @@ class QRCodeGeneratorViewModel(
         }
 
         return result
+    }
+
+    private fun getQrColorString(): String {
+        return "$codeRed-$codeGreen-$codeBlue"
     }
 
     fun getQRCodeColor(): Color {
@@ -216,12 +221,17 @@ class QRCodeGeneratorViewModel(
     fun getQRCode() {
         viewModelScope.launch {
             try {
-                val response = qrCodeRepository.getQRCode(URLEncoder.encode(encodedData, "UTF-8"))
+                val response = qrCodeRepository.getQRCode(
+                    URLEncoder.encode(encodedData, "UTF-8"),
+                    getQrColorString()
+                )
 
                 if (response.isSuccessful) {
                     val byteArray = response.body()!!.bytes()
 
                     Log.d("viewModel", "byteArray is: $byteArray")
+
+//                    val encodedImageString = Base64.encodeToString(byteArray, Base64.DEFAULT)
 
                     val imageBitmap = Bitmap
                         .createScaledBitmap(

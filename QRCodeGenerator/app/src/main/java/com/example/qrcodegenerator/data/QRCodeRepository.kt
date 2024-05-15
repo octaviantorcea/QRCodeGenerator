@@ -6,7 +6,8 @@ import retrofit2.Response
 
 interface QRCodeRepository {
     suspend fun getQRCode(
-        encodedData: String
+        encodedData: String,
+        qrColor: String,
     ): Response<ResponseBody>
 }
 
@@ -14,6 +15,7 @@ class NetworkQRCodeRepository(
     private val qrCodeApiService: QRCodeApiService
 ): QRCodeRepository {
     override suspend fun getQRCode(
-        encodedData: String
-    ): Response<ResponseBody> = qrCodeApiService.getQRCode(encodedData)
+        encodedData: String,
+        qrColor: String
+    ): Response<ResponseBody> = qrCodeApiService.getQRCode(encodedData, qrColor)
 }
