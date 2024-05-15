@@ -29,6 +29,7 @@ import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.model.QRCodeScreen
 import com.example.qrcodegenerator.ui.screens.HomeScreen
 import com.example.qrcodegenerator.ui.screens.LoginScreen
+import com.example.qrcodegenerator.ui.screens.QRCodeMainScreen
 import com.example.qrcodegenerator.ui.screens.QRCodeParamsScreen
 import com.example.qrcodegenerator.ui.screens.RegistrationScreen
 
@@ -117,6 +118,10 @@ fun QRCodeGeneratorApp(
 
             composable(route = QRCodeScreen.QRCodeParamsScreen.name) {
                 QRCodeParamsScreen(
+                    onGenerateQRCode = {
+                        viewModel.getQRCode()
+                        navController.navigate(QRCodeScreen.QRCodeMainScreen.name)
+                    },
                     encodedData = viewModel.encodedData,
                     onUpdateEncodedData = { viewModel.updateEncodedData(it) },
                     codeRed = viewModel.codeRed,
@@ -126,6 +131,13 @@ fun QRCodeGeneratorApp(
                     onUpdateGreen = { viewModel.updateGreen(it) },
                     onUpdateBlue = { viewModel.updateBlue(it) },
                     textColor = viewModel.getQRCodeColor()
+                )
+            }
+
+            composable(route = QRCodeScreen.QRCodeMainScreen.name) {
+                QRCodeMainScreen(
+                    isLoggedIn = uiState.isLogged,
+                    imageBitmap = uiState.imageBitmap
                 )
             }
         }

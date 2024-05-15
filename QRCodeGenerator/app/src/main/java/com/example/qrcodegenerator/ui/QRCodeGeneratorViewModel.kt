@@ -1,10 +1,13 @@
 package com.example.qrcodegenerator.ui
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -15,6 +18,7 @@ import com.example.qrcodegenerator.QRCodeGeneratorApplication
 import com.example.qrcodegenerator.data.AuthRepository
 import com.example.qrcodegenerator.data.LoginStatus
 import com.example.qrcodegenerator.data.QRCodeGeneratorUiState
+import com.example.qrcodegenerator.data.QRCodeRepository
 import com.example.qrcodegenerator.data.RegistrationStatus
 import com.example.qrcodegenerator.model.AuthServiceBasicResponse
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,9 +29,11 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import java.net.URLEncoder
 
 class QRCodeGeneratorViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val qrCodeRepository: QRCodeRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(QRCodeGeneratorUiState())
     val uiState: StateFlow<QRCodeGeneratorUiState> = _uiState.asStateFlow()
@@ -207,6 +213,40 @@ class QRCodeGeneratorViewModel(
         }
     }
 
+    fun getQRCode() {
+        viewModelScope.launch {
+            try {
+                val response = qrCodeRepository.getQRCode(URLEncoder.encode(encodedData, "UTF-8"))
+
+                if (response.isSuccessful) {
+                    val byteArray = response.body()!!.bytes()
+
+                    Log.d("viewModel", "byteArray is: $byteArray")
+
+                    val imageBitmap = Bitmap
+                        .createScaledBitmap(
+                            BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size),
+                            800,
+                            800,
+                            false
+                        )
+                        .asImageBitmap()
+
+                    _uiState.update {
+                        it.copy(
+                            imageBitmap = imageBitmap
+                        )
+                    }
+                } else {
+                    Log.e("viewModel", "response is not successful; " +
+                            "return code: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("viewModel", "unknown error: $e")
+            }
+        }
+    }
+
     private fun updateRegistrationStatus(status: RegistrationStatus) {
         _uiState.update {
             it.copy(
@@ -228,7 +268,11 @@ class QRCodeGeneratorViewModel(
             initializer {
                 val application = (this[APPLICATION_KEY] as QRCodeGeneratorApplication)
                 val authRepository = application.container.authRepository
-                QRCodeGeneratorViewModel(authRepository = authRepository)
+                val qrCodeRepository = application.container.qrCodeRepository
+                QRCodeGeneratorViewModel(
+                    authRepository = authRepository,
+                    qrCodeRepository = qrCodeRepository
+                )
             }
         }
     }

@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,13 +40,11 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.qrcodegenerator.R
-import com.example.qrcodegenerator.ui.QRCodeGeneratorViewModel
 
 @Composable
 fun QRCodeParamsScreen(
+    onGenerateQRCode: () -> Unit,
     encodedData: String,
     onUpdateEncodedData: (String) -> Unit,
     codeRed: String,
@@ -93,7 +88,7 @@ fun QRCodeParamsScreen(
                     .padding(bottom = 16.dp)
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = onGenerateQRCode,
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.size(200.dp)
             ) {
@@ -236,6 +231,7 @@ fun PreviewScreen() {
         onUpdateRed = { red = it },
         onUpdateGreen = { green = it },
         onUpdateBlue = { blue = it },
-        textColor = Color(red.toInt(), green.toInt(), blue.toInt())
+        textColor = Color(red.toInt(), green.toInt(), blue.toInt()),
+        onGenerateQRCode = {}
     )
 }
