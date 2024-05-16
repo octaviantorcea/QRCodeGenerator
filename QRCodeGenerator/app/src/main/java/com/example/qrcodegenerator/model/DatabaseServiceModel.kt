@@ -8,3 +8,8 @@ data class DatabaseSaveCodeBody(
     val encodedData: String,
     val qrCodeColor: String
 )
+
+@Serializable
+data class SaveCodeBody(
+    val message: String
+)

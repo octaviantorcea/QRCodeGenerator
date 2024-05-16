@@ -137,7 +137,8 @@ fun QRCodeGeneratorApp(
             composable(route = QRCodeScreen.QRCodeMainScreen.name) {
                 QRCodeMainScreen(
                     isLoggedIn = uiState.isLogged,
-                    imageBitmap = uiState.imageBitmap,
+                    fetchImageBitmapMethod = { viewModel.getQRCodeBitmap() },
+                    generateCodeStatus = uiState.generateCodeStatus,
                     onSaveQRCode = { viewModel.saveQRCode() }
                 )
             }

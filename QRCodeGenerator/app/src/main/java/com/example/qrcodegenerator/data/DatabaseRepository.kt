@@ -1,6 +1,7 @@
 package com.example.qrcodegenerator.data
 
 import com.example.qrcodegenerator.model.DatabaseSaveCodeBody
+import com.example.qrcodegenerator.model.SaveCodeBody
 import com.example.qrcodegenerator.network.DatabaseApiService
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -11,7 +12,7 @@ interface DatabaseRepository {
         encodedStringImage: String,
         encodedData: String,
         qrCodeColor: String
-    ): Response<ResponseBody>
+    ): Response<SaveCodeBody>
 }
 
 class NetworkDatabaseRepository(
@@ -22,7 +23,7 @@ class NetworkDatabaseRepository(
         encodedStringImage: String,
         encodedData: String,
         qrCodeColor: String
-    ): Response<ResponseBody> = databaseApiService.saveQRCode(
+    ): Response<SaveCodeBody> = databaseApiService.saveQRCode(
         authToken,
         DatabaseSaveCodeBody(encodedStringImage, encodedData, qrCodeColor)
     )

@@ -1,6 +1,7 @@
 package com.example.qrcodegenerator.network
 
 import com.example.qrcodegenerator.model.DatabaseSaveCodeBody
+import com.example.qrcodegenerator.model.SaveCodeBody
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -12,5 +13,5 @@ interface DatabaseApiService {
     suspend fun saveQRCode(
         @Header("Authorization") authToken: String,
         @Body saveCodeBody: DatabaseSaveCodeBody
-    ): Response<ResponseBody>
+    ): Response<SaveCodeBody>
 }

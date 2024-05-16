@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,12 +19,14 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.qrcodegenerator.R
+import com.example.qrcodegenerator.data.GenerateCodeStatus
 
 @Composable
 fun QRCodeMainScreen(
     isLoggedIn: Boolean,
-    imageBitmap: ImageBitmap,
+    fetchImageBitmapMethod: () -> ImageBitmap,
     onSaveQRCode: () -> Unit,
+    generateCodeStatus: GenerateCodeStatus,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
@@ -41,14 +44,36 @@ fun QRCodeMainScreen(
             )
             .fillMaxSize()
     ) {
-        Image(
-            bitmap = imageBitmap,
-            contentDescription = stringResource(R.string.qr_code),
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-        )
+        when (generateCodeStatus) {
+            GenerateCodeStatus.NOT_STARTED -> { }
 
-        if (isLoggedIn) {
+            GenerateCodeStatus.IN_PROGRESS -> {
+                Image(
+                    painter = painterResource(id = R.drawable.loading_img),
+                    contentDescription = stringResource(R.string.generating_qr_code),
+                    modifier = Modifier.size(500.dp)
+                )
+            }
+
+            GenerateCodeStatus.COMPLETED -> {
+                Image(
+                    bitmap = fetchImageBitmapMethod(),
+                    contentDescription = stringResource(R.string.qr_code),
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                )
+            }
+
+            GenerateCodeStatus.ERROR -> {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_broken_image),
+                    contentDescription = stringResource(R.string.broken_qr_code),
+                    modifier = Modifier.size(500.dp)
+                )
+            }
+        }
+
+        if (isLoggedIn && generateCodeStatus == GenerateCodeStatus.COMPLETED) {
             CustomIconButton(
                 buttonText = "Save code",
                 iconPainterResource = painterResource(id = R.drawable.save),
@@ -63,7 +88,10 @@ fun QRCodeMainScreen(
 fun PreviewMainScreen() {
     QRCodeMainScreen(
         isLoggedIn = true,
-        imageBitmap = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888).asImageBitmap(),
-        onSaveQRCode = {}
+        fetchImageBitmapMethod = {
+            Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888).asImageBitmap()
+        },
+        onSaveQRCode = {},
+        generateCodeStatus = GenerateCodeStatus.IN_PROGRESS
     )
 }

@@ -39,4 +39,5 @@
     <string name="qr_code_main_screen_title">QR Code</string>
     <string name="qr_code">QR Code</string>
     <string name="generating_qr_code">Generating QR Code</string>
+    <string name="broken_qr_code">Broken QR Code</string>
 </resources>

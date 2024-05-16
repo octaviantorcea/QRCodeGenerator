@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,6 +19,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.qrcodegenerator.QRCodeGeneratorApplication
 import com.example.qrcodegenerator.data.AuthRepository
 import com.example.qrcodegenerator.data.DatabaseRepository
+import com.example.qrcodegenerator.data.GenerateCodeStatus
 import com.example.qrcodegenerator.data.LoginStatus
 import com.example.qrcodegenerator.data.QRCodeGeneratorUiState
 import com.example.qrcodegenerator.data.QRCodeRepository
@@ -81,6 +83,17 @@ class QRCodeGeneratorViewModel(
 
     fun updateBlue(updatedBlue: String) {
         codeBlue = updatedBlue
+    }
+
+    fun getQRCodeBitmap(): ImageBitmap {
+        return Bitmap.createScaledBitmap(
+            BitmapFactory.decodeByteArray(
+                uiState.value.imageByteArray, 0, uiState.value.imageByteArray.size
+            ),
+            800,
+            800,
+            false
+        ).asImageBitmap()
     }
 
     private fun validateStringIntForColor(stringInt: String): Int {
@@ -221,6 +234,8 @@ class QRCodeGeneratorViewModel(
     }
 
     fun getQRCode() {
+        updateGenerateCodeStatus(GenerateCodeStatus.IN_PROGRESS)
+
         viewModelScope.launch {
             try {
                 val response = qrCodeRepository.getQRCode(
@@ -233,26 +248,22 @@ class QRCodeGeneratorViewModel(
 
                     Log.d("viewModel", "byteArray is: $byteArray")
 
-                    val imageBitmap = Bitmap
-                        .createScaledBitmap(
-                            BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size),
-                            800,
-                            800,
-                            false
-                        )
-                        .asImageBitmap()
-
                     _uiState.update {
                         it.copy(
-                            imageBitmap = imageBitmap,
-                            tempBytesArray = byteArray
+                            imageByteArray = byteArray
                         )
                     }
+
+                    updateGenerateCodeStatus(GenerateCodeStatus.COMPLETED)
                 } else {
+                    updateGenerateCodeStatus(GenerateCodeStatus.ERROR)
+
                     Log.e("viewModel", "response is not successful; " +
                             "return code: ${response.code()}")
                 }
             } catch (e: Exception) {
+                updateGenerateCodeStatus(GenerateCodeStatus.ERROR)
+
                 Log.e("viewModel", "unknown error: $e")
             }
         }
@@ -261,18 +272,16 @@ class QRCodeGeneratorViewModel(
     fun saveQRCode() {
         viewModelScope.launch {
             try {
-                val encodedImageString = Base64.encodeToString(uiState.value.tempBytesArray, Base64.DEFAULT)
+                val encodedImageString = Base64.encodeToString(uiState.value.imageByteArray, Base64.DEFAULT)
 
-                val response = databaseRepository.saveQRCode(
+                val saveCodeResponse = databaseRepository.saveQRCode(
                     uiState.value.token,
                     encodedImageString,
                     encodedData,
                     getQrColorString()
                 )
-
-                println(response.body())
             } catch (e: Exception) {
-
+                Log.e("viewModel", "unknown error: $e")
             }
         }
     }
@@ -289,6 +298,14 @@ class QRCodeGeneratorViewModel(
         _uiState.update {
             it.copy(
                 loginStatus = status
+            )
+        }
+    }
+
+    private fun updateGenerateCodeStatus(status: GenerateCodeStatus) {
+        _uiState.update {
+            it.copy(
+                generateCodeStatus = status
             )
         }
     }

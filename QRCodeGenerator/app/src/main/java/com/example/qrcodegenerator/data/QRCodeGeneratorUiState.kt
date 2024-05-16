@@ -23,11 +23,18 @@ enum class LoginStatus {
     COMPLETED
 }
 
+enum class GenerateCodeStatus {
+    NOT_STARTED,
+    IN_PROGRESS,
+    COMPLETED,
+    ERROR
+}
+
 data class QRCodeGeneratorUiState(
     val isLogged: Boolean = false,
     val registrationStatus: RegistrationStatus = RegistrationStatus.NOT_STARTED,
     val loginStatus: LoginStatus = LoginStatus.NOT_STARTED,
+    val generateCodeStatus: GenerateCodeStatus = GenerateCodeStatus.NOT_STARTED,
     val token: String = "",
-    val imageBitmap: ImageBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888).asImageBitmap(),
-    val tempBytesArray: ByteArray = ByteArray(1)
+    val imageByteArray: ByteArray = ByteArray(1)
 )
