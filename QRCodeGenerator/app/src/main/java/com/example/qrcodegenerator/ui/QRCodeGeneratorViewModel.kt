@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.qrcodegenerator.QRCodeGeneratorApplication
 import com.example.qrcodegenerator.data.AuthRepository
+import com.example.qrcodegenerator.data.DatabaseRepository
 import com.example.qrcodegenerator.data.LoginStatus
 import com.example.qrcodegenerator.data.QRCodeGeneratorUiState
 import com.example.qrcodegenerator.data.QRCodeRepository
@@ -34,7 +35,8 @@ import java.net.URLEncoder
 
 class QRCodeGeneratorViewModel(
     private val authRepository: AuthRepository,
-    private val qrCodeRepository: QRCodeRepository
+    private val qrCodeRepository: QRCodeRepository,
+    private val databaseRepository: DatabaseRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(QRCodeGeneratorUiState())
     val uiState: StateFlow<QRCodeGeneratorUiState> = _uiState.asStateFlow()
@@ -231,8 +233,6 @@ class QRCodeGeneratorViewModel(
 
                     Log.d("viewModel", "byteArray is: $byteArray")
 
-//                    val encodedImageString = Base64.encodeToString(byteArray, Base64.DEFAULT)
-
                     val imageBitmap = Bitmap
                         .createScaledBitmap(
                             BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size),
@@ -244,7 +244,8 @@ class QRCodeGeneratorViewModel(
 
                     _uiState.update {
                         it.copy(
-                            imageBitmap = imageBitmap
+                            imageBitmap = imageBitmap,
+                            tempBytesArray = byteArray
                         )
                     }
                 } else {
@@ -253,6 +254,25 @@ class QRCodeGeneratorViewModel(
                 }
             } catch (e: Exception) {
                 Log.e("viewModel", "unknown error: $e")
+            }
+        }
+    }
+
+    fun saveQRCode() {
+        viewModelScope.launch {
+            try {
+                val encodedImageString = Base64.encodeToString(uiState.value.tempBytesArray, Base64.DEFAULT)
+
+                val response = databaseRepository.saveQRCode(
+                    uiState.value.token,
+                    encodedImageString,
+                    encodedData,
+                    getQrColorString()
+                )
+
+                println(response.body())
+            } catch (e: Exception) {
+
             }
         }
     }
@@ -279,9 +299,11 @@ class QRCodeGeneratorViewModel(
                 val application = (this[APPLICATION_KEY] as QRCodeGeneratorApplication)
                 val authRepository = application.container.authRepository
                 val qrCodeRepository = application.container.qrCodeRepository
+                val databaseRepository = application.container.databaseRepository
                 QRCodeGeneratorViewModel(
                     authRepository = authRepository,
-                    qrCodeRepository = qrCodeRepository
+                    qrCodeRepository = qrCodeRepository,
+                    databaseRepository = databaseRepository
                 )
             }
         }

@@ -23,6 +23,7 @@ import com.example.qrcodegenerator.R
 fun QRCodeMainScreen(
     isLoggedIn: Boolean,
     imageBitmap: ImageBitmap,
+    onSaveQRCode: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
@@ -51,7 +52,7 @@ fun QRCodeMainScreen(
             CustomIconButton(
                 buttonText = "Save code",
                 iconPainterResource = painterResource(id = R.drawable.save),
-                onClick = { /*TODO*/ }
+                onClick = onSaveQRCode
             )
         }
     }
@@ -62,6 +63,7 @@ fun QRCodeMainScreen(
 fun PreviewMainScreen() {
     QRCodeMainScreen(
         isLoggedIn = true,
-        imageBitmap = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888).asImageBitmap()
+        imageBitmap = Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888).asImageBitmap(),
+        onSaveQRCode = {}
     )
 }
