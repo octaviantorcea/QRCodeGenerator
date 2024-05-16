@@ -88,7 +88,11 @@ fun QRCodeParamsScreen(
                     .padding(bottom = 16.dp)
             )
             Button(
-                onClick = onGenerateQRCode,
+                onClick = {
+                    if (encodedData.isNotEmpty()) {
+                        onGenerateQRCode()
+                    }
+                },
                 shape = RoundedCornerShape(24.dp),
                 modifier = Modifier.size(200.dp)
             ) {
