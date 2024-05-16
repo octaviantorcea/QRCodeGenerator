@@ -34,38 +34,38 @@ def get_cursor():
     return get_connect_to_db().cursor()
 
 
-@app.route("/save", methods=["POST"])
-def save_qr_code():
+def authorize_action(http_request):
     try:
-        auth_token = request.headers["Authorization"]
+        auth_token = http_request.headers["Authorization"]
 
         auth_response = requests.post(url=AUTH_URL, headers={"Authorization": auth_token})
+    except KeyError as _:
+        return "Unauthorized: token not found in header.", 401, None
     except Exception as e:
-        return jsonify(
-            {
-                "message": "Unauthorized: exception when trying to extract token from request "
-                           f"header. Exception: {e}"
-            }
-        ), 401
+        return f"Unknown error while trying to fetch token from header. Exception: {e}", 500, None
 
     status_code = auth_response.status_code
     body = auth_response.json()
     message = body["message"]
 
     if status_code == 200:
-        user_id = body["user_id"]
+        return None, 200, body["user_id"]
     elif status_code == 401:
-        return jsonify(
-            {
-                "message": f"Unauthorized; reason: {message}"
-            }
-        ), 401
+        return f"Unauthorized; reason: {message}", 401, None
     else:
+        return f"Unauthorized; received unknown status code: {status_code}", 401, None
+
+
+@app.route("/save", methods=["POST"])
+def save_qr_code():
+    auth_resp_msg, auth_status_code, user_id = authorize_action(request)
+
+    if auth_status_code != 200:
         return jsonify(
             {
-                "message": f"Unauthorized; received unknown status code: {status_code}"
+                "message": auth_resp_msg
             }
-        ), 401
+        ), auth_status_code
 
     data = request.get_json()
 
@@ -75,6 +75,17 @@ def save_qr_code():
         qr_code_color = data["qrCodeColor"]
 
         db_cursor = get_cursor()
+        db_cursor.execute(
+            "SELECT * FROM qrcodes WHERE user_id=%s AND encoded_data=%s AND qr_code_color=%s",
+            (user_id, encoded_data, qr_code_color)
+        )
+        if db_cursor.fetchone():
+            return jsonify(
+                {
+                    "message": f"QR Code already saved."
+                }
+            ), 409
+
         db_cursor.execute(
             "INSERT INTO qrcodes (user_id, encoded_data, qr_code_color, string_image) VALUES (%s, %s, %s, %s)",
             (user_id, encoded_data, qr_code_color, string_image)
@@ -86,7 +97,7 @@ def save_qr_code():
             {
                 "message": f"QR Code saved."
             }
-        ), 200
+        ), 201
     except KeyError as e:
         return jsonify(
             {
