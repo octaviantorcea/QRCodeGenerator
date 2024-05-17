@@ -24,7 +24,9 @@ import com.example.qrcodegenerator.data.LoginStatus
 import com.example.qrcodegenerator.data.QRCodeGeneratorUiState
 import com.example.qrcodegenerator.data.QRCodeRepository
 import com.example.qrcodegenerator.data.RegistrationStatus
+import com.example.qrcodegenerator.data.SaveCodeStatus
 import com.example.qrcodegenerator.model.AuthServiceBasicResponse
+import com.example.qrcodegenerator.model.SaveCodeBody
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -194,6 +196,10 @@ class QRCodeGeneratorViewModel(
         updateLoginStatus(LoginStatus.NOT_STARTED)
     }
 
+    fun resetSaveCodeStatus() {
+        updateSaveCodeStatus(SaveCodeStatus.NOT_STARTED)
+    }
+
     fun resetUsernameAndPassword() {
         username = ""
         password = ""
@@ -269,7 +275,10 @@ class QRCodeGeneratorViewModel(
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun saveQRCode() {
+        updateSaveCodeStatus(SaveCodeStatus.IN_PROGRESS)
+
         viewModelScope.launch {
             try {
                 val encodedImageString = Base64.encodeToString(uiState.value.imageByteArray, Base64.DEFAULT)
@@ -280,6 +289,36 @@ class QRCodeGeneratorViewModel(
                     encodedData,
                     getQrColorString()
                 )
+
+                val responseStatusCode = saveCodeResponse.code()
+                Log.d("viewModel", "save response status code: $responseStatusCode")
+
+                if (saveCodeResponse.isSuccessful) {
+                    updateSaveCodeStatus(SaveCodeStatus.COMPLETED)
+
+                    Log.d("viewModel", "save response message: ${saveCodeResponse.body()!!.message}")
+                } else {
+                    val errorMsg: String = Json.decodeFromStream<SaveCodeBody>(
+                        saveCodeResponse.errorBody()!!.byteStream()
+                    ).message
+                    Log.d("viewModel","save response message: $errorMsg")
+
+                    if (responseStatusCode == 400) {
+                        updateSaveCodeStatus(SaveCodeStatus.BAD_REQUEST)
+                    }
+
+                    if (responseStatusCode == 401) {
+                        updateSaveCodeStatus(SaveCodeStatus.UNAUTHORIZED)
+                    }
+
+                    if (responseStatusCode == 409) {
+                        updateSaveCodeStatus(SaveCodeStatus.DUPLICATED)
+                    }
+
+                    if (responseStatusCode == 500) {
+                        updateSaveCodeStatus(SaveCodeStatus.SERVER_ERROR)
+                    }
+                }
             } catch (e: Exception) {
                 Log.e("viewModel", "unknown error: $e")
             }
@@ -306,6 +345,14 @@ class QRCodeGeneratorViewModel(
         _uiState.update {
             it.copy(
                 generateCodeStatus = status
+            )
+        }
+    }
+
+    private fun updateSaveCodeStatus(status: SaveCodeStatus) {
+        _uiState.update {
+            it.copy(
+                saveCodeStatus = status
             )
         }
     }

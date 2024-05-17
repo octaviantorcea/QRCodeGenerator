@@ -40,4 +40,13 @@
     <string name="qr_code">QR Code</string>
     <string name="generating_qr_code">Generating QR Code</string>
     <string name="broken_qr_code">Broken QR Code</string>
+    <string name="in_progress_save_code_text">Save request has been sent. Please wait…</string>
+    <string name="complete_title">Done!</string>
+    <string name="complete_save_code_text">QR Code saved successfully.</string>
+    <string name="unauthorized_title">Unauthorized!</string>
+    <string name="unauthorized_text">Please login if you want to save this QR Code.</string>
+    <string name="duplicated_code_title">Duplicate found!</string>
+    <string name="duplicated_code_text">This QR Code has already been saved.</string>
+    <string name="bad_request_title">Bad request</string>
+    <string name="bad_request_text">Bad request format</string>
 </resources>

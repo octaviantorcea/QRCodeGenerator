@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.qrcodegenerator.R
 import com.example.qrcodegenerator.data.GenerateCodeStatus
+import com.example.qrcodegenerator.data.SaveCodeStatus
 
 @Composable
 fun QRCodeMainScreen(
@@ -28,6 +29,8 @@ fun QRCodeMainScreen(
     onSaveQRCode: () -> Unit,
     generateCodeStatus: GenerateCodeStatus,
     modifier: Modifier = Modifier,
+    saveCodeStatus: SaveCodeStatus,
+    onDismiss: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
@@ -80,6 +83,52 @@ fun QRCodeMainScreen(
                 onClick = onSaveQRCode
             )
         }
+
+        var title = ""
+        var text = ""
+
+        when (saveCodeStatus) {
+            SaveCodeStatus.NOT_STARTED -> { }
+
+            SaveCodeStatus.IN_PROGRESS -> {
+                title = stringResource(id = R.string.in_progress_title)
+                text = stringResource(id = R.string.in_progress_save_code_text)
+            }
+
+            SaveCodeStatus.COMPLETED -> {
+                title = stringResource(id = R.string.complete_title)
+                text = stringResource(id = R.string.complete_save_code_text)
+            }
+
+            SaveCodeStatus.UNAUTHORIZED -> {
+                title = stringResource(id = R.string.unauthorized_title)
+                text = stringResource(id = R.string.unauthorized_text)
+            }
+
+            SaveCodeStatus.SERVER_ERROR -> {
+                title = stringResource(id = R.string.unknown_error_title)
+                text = stringResource(id = R.string.unknown_error_text)
+            }
+
+            SaveCodeStatus.DUPLICATED -> {
+                title = stringResource(id = R.string.duplicated_code_title)
+                text = stringResource(id = R.string.duplicated_code_text)
+            }
+
+            SaveCodeStatus.BAD_REQUEST -> {
+                title = stringResource(id = R.string.bad_request_title)
+                text = stringResource(id = R.string.bad_request_text)
+            }
+        }
+
+        if (saveCodeStatus != SaveCodeStatus.NOT_STARTED) {
+            CustomAlertDialog(
+                title = title,
+                text = text,
+                confirmButtonText = stringResource(id = R.string.ok),
+                onConfirmButton = onDismiss
+            )
+        }
     }
 }
 
@@ -92,6 +141,8 @@ fun PreviewMainScreen() {
             Bitmap.createBitmap(800, 800, Bitmap.Config.ARGB_8888).asImageBitmap()
         },
         onSaveQRCode = {},
-        generateCodeStatus = GenerateCodeStatus.IN_PROGRESS
+        generateCodeStatus = GenerateCodeStatus.IN_PROGRESS,
+        saveCodeStatus = SaveCodeStatus.NOT_STARTED,
+        onDismiss = {}
     )
 }

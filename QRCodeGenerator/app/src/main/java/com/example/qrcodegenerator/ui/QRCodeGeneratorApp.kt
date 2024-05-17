@@ -139,7 +139,9 @@ fun QRCodeGeneratorApp(
                     isLoggedIn = uiState.isLogged,
                     fetchImageBitmapMethod = { viewModel.getQRCodeBitmap() },
                     generateCodeStatus = uiState.generateCodeStatus,
-                    onSaveQRCode = { viewModel.saveQRCode() }
+                    onSaveQRCode = { viewModel.saveQRCode() },
+                    saveCodeStatus = uiState.saveCodeStatus,
+                    onDismiss = { viewModel.resetSaveCodeStatus() }
                 )
             }
         }

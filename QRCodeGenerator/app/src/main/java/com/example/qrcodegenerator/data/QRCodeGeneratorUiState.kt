@@ -30,11 +30,22 @@ enum class GenerateCodeStatus {
     ERROR
 }
 
+enum class SaveCodeStatus {
+    NOT_STARTED,
+    IN_PROGRESS,
+    COMPLETED,
+    UNAUTHORIZED,
+    SERVER_ERROR,
+    DUPLICATED,
+    BAD_REQUEST
+}
+
 data class QRCodeGeneratorUiState(
     val isLogged: Boolean = false,
     val registrationStatus: RegistrationStatus = RegistrationStatus.NOT_STARTED,
     val loginStatus: LoginStatus = LoginStatus.NOT_STARTED,
     val generateCodeStatus: GenerateCodeStatus = GenerateCodeStatus.NOT_STARTED,
+    val saveCodeStatus: SaveCodeStatus = SaveCodeStatus.NOT_STARTED,
     val token: String = "",
     val imageByteArray: ByteArray = ByteArray(1)
 )
