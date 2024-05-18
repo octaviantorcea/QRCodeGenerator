@@ -1,5 +1,4 @@
 import requests
-import jwt
 import psycopg2
 from flask import Flask, request, jsonify
 
@@ -104,6 +103,42 @@ def save_qr_code():
                 "message": f"Bad body request format: {e}"
             }
         ), 400
+    except Exception as e:
+        print(e)
+
+        return jsonify(
+            {
+                "message": f"Database server error: {e}"
+            }
+        ), 500
+
+
+@app.route("/codes", methods=["GET"])
+def get_codes():
+    auth_resp_msg, auth_status_code, user_id = authorize_action(request)
+
+    if auth_status_code != 200:
+        return jsonify(
+            {
+                "message": auth_resp_msg
+            }
+        ), auth_status_code
+
+    try:
+        db_cursor = get_cursor()
+        db_cursor.execute("SELECT encoded_data, string_image FROM qrcodes WHERE user_id=%s", (user_id,))
+        result = db_cursor.fetchall()
+        response = []
+
+        for encoded_data, string_image in result:
+            response_dict = {"encoded_data": encoded_data, "string_image": string_image}
+            response.append(response_dict)
+
+        return jsonify(
+            {
+                "saved_codes": response
+            }
+        ), 200
     except Exception as e:
         print(e)
 
