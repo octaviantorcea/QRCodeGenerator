@@ -1,6 +1,7 @@
 package com.example.qrcodegenerator.data
 
 import com.example.qrcodegenerator.model.DatabaseSaveCodeBody
+import com.example.qrcodegenerator.model.GetCodesResponse
 import com.example.qrcodegenerator.model.SaveCodeBody
 import com.example.qrcodegenerator.network.DatabaseApiService
 import okhttp3.ResponseBody
@@ -13,6 +14,10 @@ interface DatabaseRepository {
         encodedData: String,
         qrCodeColor: String
     ): Response<SaveCodeBody>
+
+    suspend fun getQRCodes(
+        authToken: String
+    ): Response<GetCodesResponse>
 }
 
 class NetworkDatabaseRepository(
@@ -27,4 +32,8 @@ class NetworkDatabaseRepository(
         authToken,
         DatabaseSaveCodeBody(encodedStringImage, encodedData, qrCodeColor)
     )
+
+    override suspend fun getQRCodes(
+        authToken: String
+    ): Response<GetCodesResponse> = databaseApiService.getQRCodes(authToken)
 }

@@ -20,6 +20,7 @@ import com.example.qrcodegenerator.QRCodeGeneratorApplication
 import com.example.qrcodegenerator.data.AuthRepository
 import com.example.qrcodegenerator.data.DatabaseRepository
 import com.example.qrcodegenerator.data.GenerateCodeStatus
+import com.example.qrcodegenerator.data.GetSavedCodesStatus
 import com.example.qrcodegenerator.data.LoginStatus
 import com.example.qrcodegenerator.data.QRCodeGeneratorUiState
 import com.example.qrcodegenerator.data.QRCodeRepository
@@ -325,6 +326,49 @@ class QRCodeGeneratorViewModel(
         }
     }
 
+    fun getSavedQRCodes() {
+        updateGetSavedCodesStatus(GetSavedCodesStatus.IN_PROGRESS)
+
+        viewModelScope.launch {
+            try {
+                val response = databaseRepository.getQRCodes(uiState.value.token)
+                val responseBody = response.body()
+
+                val savedCodesList: MutableList<SavedCodesDataForScreen> = mutableListOf()
+
+                for (entry in responseBody!!.savedCodes) {
+                    val imageByteArray = Base64.decode(entry.stringImage, Base64.DEFAULT)
+
+                    savedCodesList.add(
+                        SavedCodesDataForScreen(
+                            encodedData = entry.encodedData,
+                            imageBitmap = Bitmap.createScaledBitmap(
+                                BitmapFactory.decodeByteArray(
+                                    imageByteArray, 0, imageByteArray.size
+                                ),
+                                800,
+                                800,
+                                false
+                            ).asImageBitmap()
+                        )
+                    )
+                }
+
+                Log.d("viewModel", "$response")
+
+                _uiState.update {
+                    it.copy(
+                        getSavedCodesStatus = GetSavedCodesStatus.COMPLETED,
+                        savedCodes = savedCodesList
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("viewModel", "unknown error: $e")
+
+            }
+        }
+    }
+
     private fun updateRegistrationStatus(status: RegistrationStatus) {
         _uiState.update {
             it.copy(
@@ -357,6 +401,14 @@ class QRCodeGeneratorViewModel(
         }
     }
 
+    private fun updateGetSavedCodesStatus(savedCodesStatus: GetSavedCodesStatus) {
+        _uiState.update {
+            it.copy(
+                getSavedCodesStatus = savedCodesStatus
+            )
+        }
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
@@ -373,3 +425,8 @@ class QRCodeGeneratorViewModel(
         }
     }
 }
+
+data class SavedCodesDataForScreen(
+    val encodedData: String,
+    val imageBitmap: ImageBitmap
+)

@@ -49,4 +49,6 @@
     <string name="duplicated_code_text">This QR Code has already been saved.</string>
     <string name="bad_request_title">Bad request</string>
     <string name="bad_request_text">Bad request format</string>
+    <string name="view_saved_codes">View Saved Codes</string>
+    <string name="saved_qr_codes">Saved QR Codes</string>
 </resources>

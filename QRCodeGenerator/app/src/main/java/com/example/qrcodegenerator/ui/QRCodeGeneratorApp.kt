@@ -32,6 +32,7 @@ import com.example.qrcodegenerator.ui.screens.LoginScreen
 import com.example.qrcodegenerator.ui.screens.QRCodeMainScreen
 import com.example.qrcodegenerator.ui.screens.QRCodeParamsScreen
 import com.example.qrcodegenerator.ui.screens.RegistrationScreen
+import com.example.qrcodegenerator.ui.screens.SavedCodesScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +79,11 @@ fun QRCodeGeneratorApp(
                         navController.navigate(QRCodeScreen.LoginScreen.name)
                     },
                     onClickLogout = { viewModel.logout() },
-                    onClickGenerate = { navController.navigate(QRCodeScreen.QRCodeParamsScreen.name) }
+                    onClickGenerate = { navController.navigate(QRCodeScreen.QRCodeParamsScreen.name) },
+                    onClickViewSavedCodes = {
+                        viewModel.getSavedQRCodes()
+                        navController.navigate(QRCodeScreen.SavedCodesScreen.name)
+                    }
                 )
             }
 
@@ -142,6 +147,13 @@ fun QRCodeGeneratorApp(
                     onSaveQRCode = { viewModel.saveQRCode() },
                     saveCodeStatus = uiState.saveCodeStatus,
                     onDismiss = { viewModel.resetSaveCodeStatus() }
+                )
+            }
+
+            composable(route = QRCodeScreen.SavedCodesScreen.name) {
+                SavedCodesScreen(
+                    savedCodes = uiState.savedCodes,
+                    savedCodesStatus = uiState.getSavedCodesStatus
                 )
             }
         }

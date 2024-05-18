@@ -1,8 +1,6 @@
 package com.example.qrcodegenerator.data
 
-import android.graphics.Bitmap
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import com.example.qrcodegenerator.ui.SavedCodesDataForScreen
 
 enum class RegistrationStatus {
     NOT_STARTED,
@@ -40,12 +38,21 @@ enum class SaveCodeStatus {
     BAD_REQUEST
 }
 
+enum class GetSavedCodesStatus {
+    NOT_STARTED,
+    IN_PROGRESS,
+    COMPLETED
+}
+
+
 data class QRCodeGeneratorUiState(
     val isLogged: Boolean = false,
     val registrationStatus: RegistrationStatus = RegistrationStatus.NOT_STARTED,
     val loginStatus: LoginStatus = LoginStatus.NOT_STARTED,
     val generateCodeStatus: GenerateCodeStatus = GenerateCodeStatus.NOT_STARTED,
     val saveCodeStatus: SaveCodeStatus = SaveCodeStatus.NOT_STARTED,
+    val getSavedCodesStatus: GetSavedCodesStatus = GetSavedCodesStatus.NOT_STARTED,
     val token: String = "",
-    val imageByteArray: ByteArray = ByteArray(1)
+    val imageByteArray: ByteArray = ByteArray(1),
+    val savedCodes: MutableList<SavedCodesDataForScreen> = mutableListOf()
 )

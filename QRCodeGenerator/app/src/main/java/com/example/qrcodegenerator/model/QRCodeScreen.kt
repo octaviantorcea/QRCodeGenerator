@@ -8,5 +8,6 @@ enum class QRCodeScreen(@StringRes val title: Int) {
     RegistrationScreen(title = R.string.register),
     LoginScreen(title = R.string.login),
     QRCodeParamsScreen(title = R.string.qr_code_params_screen_title),
-    QRCodeMainScreen(title = R.string.qr_code_main_screen_title)
+    QRCodeMainScreen(title = R.string.qr_code_main_screen_title),
+    SavedCodesScreen(title = R.string.saved_qr_codes)
 }

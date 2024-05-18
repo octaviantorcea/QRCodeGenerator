@@ -26,6 +26,7 @@ fun HomeScreen(
     onClickLogin: () -> Unit,
     onClickLogout: () -> Unit,
     onClickGenerate: () -> Unit,
+    onClickViewSavedCodes: () -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     Column(
@@ -51,9 +52,9 @@ fun HomeScreen(
 
         if (isLogged) {
             CustomIconButton(
-                buttonText = "View Saved Codes",
+                buttonText = stringResource(R.string.view_saved_codes),
                 iconPainterResource = painterResource(id = R.drawable.save),
-                onClick = {},
+                onClick = onClickViewSavedCodes,
                 modifier = modifier
                     .padding(top = 16.dp)
                     .height(70.dp)
@@ -119,6 +120,7 @@ fun HomeScreenPreview() {
         onClickRegister = {},
         onClickLogin = {},
         onClickLogout = {},
-        onClickGenerate = {}
+        onClickGenerate = {},
+        onClickViewSavedCodes = {}
     )
 }
