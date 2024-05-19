@@ -35,7 +35,7 @@ fun HomeScreen(
             .padding(
                 top = contentPadding
                     .calculateTopPadding()
-                    .plus(16.dp),
+                    .plus(120.dp),
                 bottom = contentPadding
                     .calculateBottomPadding()
                     .plus(40.dp)
