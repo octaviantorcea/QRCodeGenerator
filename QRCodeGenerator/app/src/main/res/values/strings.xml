@@ -51,4 +51,8 @@
     <string name="bad_request_text">Bad request format</string>
     <string name="view_saved_codes">View Saved Codes</string>
     <string name="saved_qr_codes">Saved QR Codes</string>
+    <string name="no_qr_codes_have_been_saved">No QR codes have been saved!</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="loading_image">Loading image</string>
+    <string name="you_are_not_logged_in_please_log_in_to_see_saved_qr_codes">You are not logged in. Please log in to see saved QR Codes.</string>
 </resources>

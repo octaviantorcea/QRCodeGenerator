@@ -41,7 +41,9 @@ enum class SaveCodeStatus {
 enum class GetSavedCodesStatus {
     NOT_STARTED,
     IN_PROGRESS,
-    COMPLETED
+    COMPLETED,
+    SERVER_ERROR,
+    UNAUTHORIZED
 }
 
 

@@ -326,45 +326,62 @@ class QRCodeGeneratorViewModel(
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
     fun getSavedQRCodes() {
         updateGetSavedCodesStatus(GetSavedCodesStatus.IN_PROGRESS)
 
         viewModelScope.launch {
             try {
                 val response = databaseRepository.getQRCodes(uiState.value.token)
-                val responseBody = response.body()
 
-                val savedCodesList: MutableList<SavedCodesDataForScreen> = mutableListOf()
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
 
-                for (entry in responseBody!!.savedCodes) {
-                    val imageByteArray = Base64.decode(entry.stringImage, Base64.DEFAULT)
+                    val savedCodesList: MutableList<SavedCodesDataForScreen> = mutableListOf()
 
-                    savedCodesList.add(
-                        SavedCodesDataForScreen(
-                            encodedData = entry.encodedData,
-                            imageBitmap = Bitmap.createScaledBitmap(
-                                BitmapFactory.decodeByteArray(
-                                    imageByteArray, 0, imageByteArray.size
-                                ),
-                                800,
-                                800,
-                                false
-                            ).asImageBitmap()
+                    for (entry in responseBody!!.savedCodes) {
+                        val imageByteArray = Base64.decode(entry.stringImage, Base64.DEFAULT)
+
+                        savedCodesList.add(
+                            SavedCodesDataForScreen(
+                                encodedData = entry.encodedData,
+                                imageBitmap = Bitmap.createScaledBitmap(
+                                    BitmapFactory.decodeByteArray(
+                                        imageByteArray, 0, imageByteArray.size
+                                    ),
+                                    800,
+                                    800,
+                                    false
+                                ).asImageBitmap()
+                            )
                         )
-                    )
-                }
+                    }
 
-                Log.d("viewModel", "$response")
+                    Log.d("viewModel", "${response.body()!!.savedCodes}")
 
-                _uiState.update {
-                    it.copy(
-                        getSavedCodesStatus = GetSavedCodesStatus.COMPLETED,
-                        savedCodes = savedCodesList
-                    )
+                    _uiState.update {
+                        it.copy(
+                            getSavedCodesStatus = GetSavedCodesStatus.COMPLETED,
+                            savedCodes = savedCodesList
+                        )
+                    }
+                } else {
+                    val errorMsg: String = Json.decodeFromStream<SaveCodeBody>(
+                        response.errorBody()!!.byteStream()
+                    ).message
+
+                    if (response.code() == 401) {
+                        updateGetSavedCodesStatus(GetSavedCodesStatus.UNAUTHORIZED)
+                    }
+
+                    if (response.code() == 500) {
+                        updateGetSavedCodesStatus(GetSavedCodesStatus.SERVER_ERROR)
+                    }
+
+                    Log.d("viewModel", errorMsg)
                 }
             } catch (e: Exception) {
                 Log.e("viewModel", "unknown error: $e")
-
             }
         }
     }
