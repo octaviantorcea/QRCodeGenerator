@@ -12,31 +12,23 @@ Efectueaza apeluri HTTP catre 3 servere:
 
 Primul ecran va da posibilitatea unui utilizator sa navigheze catre ecranul unde va crea un cod QR, sau sa isi creeze un cont. Daca utilizatorul are deja un cont creat, acesta se va putea loga.
 
-<img src="./QRCodeGenerator/doc_files/main_screen_no_login.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/main_screen_yes_login.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/main_screen_no_login.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/main_screen_yes_login.png" alt="" width="300" />
 
 Ecranul de inregistrare da posibilitatea de a crea un cont folosing un username si o parola.
 
-<img src="./QRCodeGenerator/doc_files/reg_screen.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/reg_screen_wait.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/reg_screen_done.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/reg_screen.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/reg_screen_wait.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/reg_screen_done.png" alt="" width="300" />
 
 Ecranul pentru autentificare este asemanator.
 
-<img src="./QRCodeGenerator/doc_files/log_screen.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/log_screen_wait.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/log_screen_done.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/log_screen.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/log_screen_wait.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/log_screen_done.png" alt="" width="300" />
 
 Ecranul ce permite construirea unui cod QR are un un camp pentru a specifica datele encodate in cod.
 Contine un dropdown menu pentru optiuni aditionale (culoarea codului QR generat).
 
-<img src="./QRCodeGenerator/doc_files/build_screen.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/build_screen_wait.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/build_screen_done.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/build_screen_save.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/build_screen.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/build_screen_wait.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/build_screen_done.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/build_screen_save.png" alt="" width="300" />
 
 Utilizatorul va putea vedea toate codurile salvate. Le va putea vedea atat intr-o versiune rezumata, cat si
 intr-o versiune extinsa.
 
-<img src="./QRCodeGenerator/doc_files/save_screen_1.png" alt="" width="300" />
-<img src="./QRCodeGenerator/doc_files/save_screen_2.png" alt="" width="300" />
+<img src="./QRCodeGenerator/doc_files/save_screen_1.png" alt="" width="300" /> <img src="./QRCodeGenerator/doc_files/save_screen_2.png" alt="" width="300" />
